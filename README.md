@@ -79,8 +79,7 @@ Pour ce faire en python avec numpy j'ai fait cette fonction avec un sbox représ
 ```python 
     message_subytes = np.array([[Sbox[byte] for byte in row] for row in message_2d])
 ```
-Le code prend chaque byte du message original (parcourant d'abord chaque ligne avec for row in message_2d, puis chaque byte dans ces lignes avec for byte in row), et le remplace par un autre byte selon la S-box (Sbox[byte]). Cela se fait pour chaque byte du message initial.
-
+Le code prend chaque byte du message original (parcourant d'abord chaque ligne avec for row in message_2d, puis chaque byte (chaque colonne de notre tableau2d) dans ces lignes avec for byte in row), et le remplace par un autre byte selon la S-box (Sbox[byte]). Cela se fait pour chaque byte du message initial.
 
 
 
