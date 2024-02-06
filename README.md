@@ -20,7 +20,7 @@ Pour ce td nous n'allons utilisé qu'une clé de 128 bits
 3. **MixColumns** : Mélange des colonnes de l'état.
 4. **AddRoundKey** : Clé de tour XOR.
 
-# Prérequis
+# Installation
 1. Installer python -> Ajouter python au PATH (Variable d'environnement)
 2. Ouvrir votre terminal de commandes et rentrer la commande suivant qui va permettre d'installer les dépendances pour que le projet se lance 
 ```
