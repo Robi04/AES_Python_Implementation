@@ -70,7 +70,6 @@ Permet d'appliquer une transposition à notre matrice pour l'avoir sous le même
 
 
 
-
 ## **SubBytes** : Substitution des octets de l'état par des octets de la S-Box.
 Ici on va prendre notre message sous forme de matrice à la sortie de notre fonction chiffrement par bloc. A cette matrice on va séparer le bit de poids fort et le bit de poids et trouver l'octet correspondant en se basant sur la s-box:
 ![image](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/da2de4af-c86a-40c4-af7b-fe85451b33dd)
@@ -82,5 +81,20 @@ Pour ce faire en python avec numpy j'ai fait cette fonction avec un sbox représ
 ```
 Le code prend chaque byte du message original (parcourant d'abord chaque ligne avec for row in message_2d, puis chaque byte dans ces lignes avec for byte in row), et le remplace par un autre byte selon la S-box (Sbox[byte]). Cela se fait pour chaque byte du message initial.
 
+
+
+
+## **ShiftRows** : Décalage des lignes de l'état.
+Ici le but va être de décaler chaque bloc contenant un byte après notre étape de SubBytes
+![image](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/51482485-f74f-43d7-8f2c-da446a9277a0)
+Pour ce faire on va juste calculer les nouvelles position par rapport à notre matrice de base 
+![image](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/26d22d4e-c002-4c6b-b883-485dde498d32)
+
+- La première rangée (index 0) n'est pas décalée.
+- La deuxième rangée (index 1) est décalée d'une position vers la gauche.
+- La troisième rangée (index 2) est décalée de deux positions vers la gauche.
+- La quatrième rangée (index 3) est décalée de trois positions vers la gauche.
+Ce décalage signifie que, par exemple, si une rangée est [a, b, c, d] et qu'elle doit être décalée de deux positions, elle deviendra [c, d, a, b].
+Pour réussir à faire en sorte que si l'index d'un des bloc est trop grand > 4 on va utiliser np.roll qui une fois au dela des limite d'indexage de notre array va redonner l'index 0.
 
 
