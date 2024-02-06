@@ -97,3 +97,25 @@ Ce décalage signifie que, par exemple, si une rangée est [a, b, c, d] et qu'el
 Pour réussir à faire en sorte que si l'index d'un des bloc est trop grand > 4 on va utiliser np.roll qui une fois au dela des limite d'indexage de notre array va redonner l'index 0.
 
 
+## **MixColumns** : 
+
+Pour ce faire j'ai emprunté le code d'autrui car je ne savais pas l'existence du XOR
+
+### Multiplication dans GF(2^8)
+La fonction multiply_in_gf(a, b) multiplie deux nombres a et b dans GF(2^8). La multiplication se fait bit par bit, avec une attention particulière aux débordements (quand le bit le plus significatif est 1 avant le décalage). L'opération principale est le XOR (^), qui remplace l'addition et la soustraction dans GF(2^n).
+
+![image](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/e6403f85-e9af-40d2-a978-ed68e30ac36c)
+
+Décalage et XOR: Le décalage à gauche de a et le décalage à droite de b servent à simuler la multiplication des polynômes. Le XOR simule l'addition/soustraction de polynômes.
+Condition MSB: Si le bit le plus significatif (MSB) de a est à 1 avant le décalage, cela signifie que le polynôme résultant dépasserait le degré 7, donc on fait un XOR avec 0x1B pour effectuer la réduction modulo le polynôme irréductible.
+MixColumns dans AES
+
+![image](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/d5605de2-acc5-4298-b00b-a61af55c7da7)
+
+
+MixColumns est une étape de l'algorithme AES qui mélange les données à l'aide d'une opération de matrice prédéfinie pour augmenter la diffusion. La matrice mix_column_matrix contient des coefficients spécifiques qui sont appliqués à chaque colonne de la matrice de l'état (ici représentée par message_shifted).
+
+Opération de matrice: Pour chaque élément de la nouvelle matrice (message_mixed), on calcule la somme (XOR) des multiplications dans GF(2^8) de chaque élément de la ligne correspondante de la matrice mix_column_matrix par chaque élément de la colonne correspondante de message_shifted.
+Diffusion: Cette étape assure que les changements dans un seul byte se propagent à plusieurs autres bytes dans l'état, rendant ainsi l'analyse cryptographique plus difficile.
+
+
