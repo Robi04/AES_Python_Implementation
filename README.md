@@ -72,7 +72,15 @@ Permet d'appliquer une transposition à notre matrice pour l'avoir sous le même
 
 
 ## **SubBytes** : Substitution des octets de l'état par des octets de la S-Box.
+Ici on va prendre notre message sous forme de matrice à la sortie de notre fonction chiffrement par bloc. A cette matrice on va séparer le bit de poids fort et le bit de poids et trouver l'octet correspondant en se basant sur la s-box:
+![image](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/da2de4af-c86a-40c4-af7b-fe85451b33dd)
 
+Pour ce faire en python avec numpy j'ai fait cette fonction avec un sbox représenté par un vecteur : 
+![image](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/8762ebb0-7c05-4fb9-a263-9fce10a782e2)
+```python 
+    message_subytes = np.array([[Sbox[byte] for byte in row] for row in message_2d])
+```
+Le code prend chaque byte du message original (parcourant d'abord chaque ligne avec for row in message_2d, puis chaque byte dans ces lignes avec for byte in row), et le remplace par un autre byte selon la S-box (Sbox[byte]). Cela se fait pour chaque byte du message initial.
 
 
 
