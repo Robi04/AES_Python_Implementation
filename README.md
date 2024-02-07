@@ -55,6 +55,11 @@ Chaque case ici  représente un octet. Par la suite, les opérations du chiffrem
 De base notre vecteur de test est Flat et ici on va passer sur des matrices de dimensions 2 de taille 4x4 
 ![image](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/91aaa7d8-8518-49d2-add9-62da6aa8c1a0)
 
+<p align="center">
+  <img width="460" height="300" src="http://www.fillmurray.com/460/300](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/91aaa7d8-8518-49d2-add9-62da6aa8c1a0">
+</p>
+
+
 Pour ce faire j'ai utilisé cette fonction : 
 ![image](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/a2679615-6a3e-4571-ae1a-6d2a288cfe3c)
 
