@@ -17,10 +17,10 @@ Pour ce td nous n'allons utilisé qu'une clé de 128 bits
 
 ```
 $Racine du projet
-├── constants.py     # Contient les constantes telles que les matrices rcon et sbox
-├── functions.py     # Contient les fonctions (étapes) de notre cryptage
-├── main.py            # Contient le code principal qui va appeler toutes les fonctions
-└── README.md   # Compte rendu et explication de code
+├── constants.py     # Contient les constantes
+├── functions.py     # Contient les fonctions (étapes)
+├── main.py          # Contient le code principal
+└── README.md        # CR et explications
 ```
 
 ## Explication de toutes les étapes du AES
