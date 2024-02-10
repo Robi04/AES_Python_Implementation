@@ -13,6 +13,16 @@ Pour ce td nous n'allons utilisé qu'une clé de 128 bits
 
 # Introduction
 
+## Architecture du code 
+
+```
+$Racine du projet
+├── constants.py     # Contient les constantes telles que les matrices rcon et sbox
+├── functions.py     # Contient les fonctions (étapes) de notre cryptage 
+├── main.py            # Contient le code principal qui va appeler toutes les fonctions qui vont permettre le cryptage cypher en 10 round
+└── README.md   # Compte rendu et explication de code 
+```
+
 ## Explication de toutes les étapes du AES
 
 1. **SubBytes** : Substitution des octets de l'état par des octets de la S-Box.
