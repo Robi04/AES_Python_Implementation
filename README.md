@@ -153,17 +153,19 @@ Le résultat de ces opérations est stocké dans message_mixed.
 
 ## **Key Expansion** :
 
-### Fonction subWord
 
+### Fonction subWord
+![code1](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/b17d4015-c904-4eb8-a889-fadf22c4e38c)
 Pour chaque byte du mot, elle cherche la correspondance la matrice Sbox.
 
-### Fonction rotWord
 
+### Fonction rotWord
+![code1](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/a52685cb-34f7-4498-b90a-4b5d7baf4837)
 On décale notre mot d'un index sur la gauche
 Si le mot était "abcd", après l'application de rotWord, il deviendrait "bcda"
 
 ### Fonction keyExpansion
-
+![Uploading code1.png…]()
 On prend la clé et prépare une version étendue de cette clé (10 nouvelle clés dans notre cas)
 On créer une matrice appelée W, qui sera remplie avec des versions transformées de la clé originale.
 Les premières parties de cette matrice sont directement remplies avec la clé originale.
