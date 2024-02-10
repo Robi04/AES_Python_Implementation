@@ -172,4 +172,5 @@ Ensuite, pour chaque "mot" suivant dans la matrice, va effectuer une série d'op
 
 ## **Add Round Key** :
 ![code1](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/f92fe25f-a179-4582-b577-7b60f085b83e)
+
 L'add round key est un étape supplémentaire ou nous allons simplement faire un XOR entre notre message de base après avoir subit quelques transformations et la clé correspondante (clé en sortie du key expansion avec l'index de notre round actuel)
