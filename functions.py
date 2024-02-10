@@ -1,43 +1,14 @@
-import numpy as np
+from constants import * 
 
 
-def conversion(message, key):
-    message_arr = []
-    key_arr = []
-    for i in range(0, len(message), 2):
-        message_arr.append(f"0x{message[i : i + 2]}")
-    for i in range(0, len(key), 2):
-        key_arr.append(f"0x{key[i : i + 2]}")
-    return message_arr, key_arr
-
-
-def multiply_in_gf(a, b):
-    result = 0
-    for _ in range(8):  # We're working with 8 bits (one byte)
-        if b & 1:  # If the least significant bit of b is 1
-            result ^= a  # XOR a with the result
-
-        # Check if the most significant bit of a is 1 (greater than or equal to 128)
-        is_msb_set = a & 0x80
-
-        # Left shift a by 1 bit
-        a <<= 1
-
-        # If the most significant bit was set, XOR the result with 0x1B (GF(2^8) irreducible polynomial)
-        if is_msb_set:
-            a ^= 0x1B
-
-        # Right shift b by 1 bit
-        b >>= 1
-
-    return result
-
-
-def chiffrementBloc(message):
-    message_2d = [message[i : i + 4] for i in range(0, len(message), 4)]
-    message_2d = np.array(list(zip(*message_2d)))
-    return message_2d
-
+# def conversion(message, key):
+#     message_arr = []
+#     key_arr = []
+#     for i in range(0, len(message), 2):
+#         message_arr.append(f"0x{message[i : i + 2]}")
+#     for i in range(0, len(key), 2):
+#         key_arr.append(f"0x{key[i : i + 2]}")
+#     return message_arr, key_arr
 
 def shiftRows(message_subytes):
     message_shifted = np.array(message_subytes)
@@ -45,302 +16,92 @@ def shiftRows(message_subytes):
         message_shifted[i] = np.roll(message_shifted[i], -i)
     return message_shifted
 
+def subBytes(message_2d):
+    message_subytes = np.array([[Sbox[byte] for byte in row] for row in message_2d])
+    return message_subytes
+
+def multiply_in_gf(a, b):
+    result = 0
+    # On itere 8 fois car on travaille avec des octets
+    for _ in range(8):  
+        # Si le bit de poids faible de b est 1
+        if b & 1:  
+            # On fait un XOR entre a et le resultat
+            result ^= a  
+
+        # On check si le bit de poids fort de a est 1
+        is_msb_set = a & 0x80
+
+        # On decale a d'un bit vers la gauche
+        a <<= 1
+
+        # Si le bit de poids fort etait 1, on fait un XOR entre le resultat et 0x1B (polynome irreductible GF(2^8))
+        if is_msb_set:
+            a ^= 0x1B
+
+        # On decale b d'un bit vers la droite
+        b >>= 1
+
+    return result
+
 
 def mixColumns(message_shifted):
-    mix_column_matrix = np.array(
-        [
-            [0x02, 0x03, 0x01, 0x01],
-            [0x01, 0x02, 0x03, 0x01],
-            [0x01, 0x01, 0x02, 0x03],
-            [0x03, 0x01, 0x01, 0x02],
-        ],
-        dtype=np.uint8,
-    )
-
     message_mixed = np.zeros_like(message_shifted, dtype=np.uint8)
-
-    # Corrected MixColumns part
-    for col in range(4):  # For each column in the message_shifted matrix
+    # Pour chaque colonne de la matrice
+    for col in range(4): 
+        # Pour chaque ligne de la matrice
         for row in range(4):
-            # Temporary variable to store the result of the mix column operation for a single element
+            # On initialise temp a 0 pour accumuler les resultats des multiplications dans le champ de Galois (GF)
             temp = 0
+            # Pour chaque element de la ligne de la matrice mix_column_matrix et de la colonne de la matrice message_shifted
             for k in range(4):
-                # For each element in the mix_column_matrix row and message_shifted column
-                # Perform Galois Field multiplication and accumulate the result with XOR
+                # On fait un XOR entre temp et le resultat de la multiplication dans le champ de Galois
+                # On utilise la fonction multiply_in_gf pour faire la multiplication
                 temp ^= multiply_in_gf(
                     mix_column_matrix[row][k], message_shifted[k][col]
                 )
+            # On stocke le resultat dans la matrice message_mixed
             message_mixed[row][col] = temp
     return message_mixed
 
 
 def addRoundKey(message_mixed, key):
-    round_key = np.array(key.reshape(4, 4).T, dtype=np.uint8)
-    state_after_addroundkey = np.bitwise_xor(message_mixed, round_key, dtype=np.uint8)
+    # On convertit les matrices en uint8 pour pouvoir faire un XOR
+    message_mixed_uint8 = message_mixed.astype(np.uint8)
+    # On reshape la clé pour qu'elle ait la meme forme que le message
+    round_key_uint8 = key.reshape(4, 4).T.astype(np.uint8)
+    # On fait un XOR entre le message et la clé
+    state_after_addroundkey = np.bitwise_xor(message_mixed_uint8, round_key_uint8)
     return state_after_addroundkey
 
+def subWord(word):
+    # On applique la Sbox a chaque byte du mot
+    return np.array([Sbox[b] for b in word], dtype=np.uint8)
 
-def subBytes(message_2d):
-    Sbox = np.array(
-        [
-            0x63,
-            0x7C,
-            0x77,
-            0x7B,
-            0xF2,
-            0x6B,
-            0x6F,
-            0xC5,
-            0x30,
-            0x01,
-            0x67,
-            0x2B,
-            0xFE,
-            0xD7,
-            0xAB,
-            0x76,
-            0xCA,
-            0x82,
-            0xC9,
-            0x7D,
-            0xFA,
-            0x59,
-            0x47,
-            0xF0,
-            0xAD,
-            0xD4,
-            0xA2,
-            0xAF,
-            0x9C,
-            0xA4,
-            0x72,
-            0xC0,
-            0xB7,
-            0xFD,
-            0x93,
-            0x26,
-            0x36,
-            0x3F,
-            0xF7,
-            0xCC,
-            0x34,
-            0xA5,
-            0xE5,
-            0xF1,
-            0x71,
-            0xD8,
-            0x31,
-            0x15,
-            0x04,
-            0xC7,
-            0x23,
-            0xC3,
-            0x18,
-            0x96,
-            0x05,
-            0x9A,
-            0x07,
-            0x12,
-            0x80,
-            0xE2,
-            0xEB,
-            0x27,
-            0xB2,
-            0x75,
-            0x09,
-            0x83,
-            0x2C,
-            0x1A,
-            0x1B,
-            0x6E,
-            0x5A,
-            0xA0,
-            0x52,
-            0x3B,
-            0xD6,
-            0xB3,
-            0x29,
-            0xE3,
-            0x2F,
-            0x84,
-            0x53,
-            0xD1,
-            0x00,
-            0xED,
-            0x20,
-            0xFC,
-            0xB1,
-            0x5B,
-            0x6A,
-            0xCB,
-            0xBE,
-            0x39,
-            0x4A,
-            0x4C,
-            0x58,
-            0xCF,
-            0xD0,
-            0xEF,
-            0xAA,
-            0xFB,
-            0x43,
-            0x4D,
-            0x33,
-            0x85,
-            0x45,
-            0xF9,
-            0x02,
-            0x7F,
-            0x50,
-            0x3C,
-            0x9F,
-            0xA8,
-            0x51,
-            0xA3,
-            0x40,
-            0x8F,
-            0x92,
-            0x9D,
-            0x38,
-            0xF5,
-            0xBC,
-            0xB6,
-            0xDA,
-            0x21,
-            0x10,
-            0xFF,
-            0xF3,
-            0xD2,
-            0xCD,
-            0x0C,
-            0x13,
-            0xEC,
-            0x5F,
-            0x97,
-            0x44,
-            0x17,
-            0xC4,
-            0xA7,
-            0x7E,
-            0x3D,
-            0x64,
-            0x5D,
-            0x19,
-            0x73,
-            0x60,
-            0x81,
-            0x4F,
-            0xDC,
-            0x22,
-            0x2A,
-            0x90,
-            0x88,
-            0x46,
-            0xEE,
-            0xB8,
-            0x14,
-            0xDE,
-            0x5E,
-            0x0B,
-            0xDB,
-            0xE0,
-            0x32,
-            0x3A,
-            0x0A,
-            0x49,
-            0x06,
-            0x24,
-            0x5C,
-            0xC2,
-            0xD3,
-            0xAC,
-            0x62,
-            0x91,
-            0x95,
-            0xE4,
-            0x79,
-            0xE7,
-            0xC8,
-            0x37,
-            0x6D,
-            0x8D,
-            0xD5,
-            0x4E,
-            0xA9,
-            0x6C,
-            0x56,
-            0xF4,
-            0xEA,
-            0x65,
-            0x7A,
-            0xAE,
-            0x08,
-            0xBA,
-            0x78,
-            0x25,
-            0x2E,
-            0x1C,
-            0xA6,
-            0xB4,
-            0xC6,
-            0xE8,
-            0xDD,
-            0x74,
-            0x1F,
-            0x4B,
-            0xBD,
-            0x8B,
-            0x8A,
-            0x70,
-            0x3E,
-            0xB5,
-            0x66,
-            0x48,
-            0x03,
-            0xF6,
-            0x0E,
-            0x61,
-            0x35,
-            0x57,
-            0xB9,
-            0x86,
-            0xC1,
-            0x1D,
-            0x9E,
-            0xE1,
-            0xF8,
-            0x98,
-            0x11,
-            0x69,
-            0xD9,
-            0x8E,
-            0x94,
-            0x9B,
-            0x1E,
-            0x87,
-            0xE9,
-            0xCE,
-            0x55,
-            0x28,
-            0xDF,
-            0x8C,
-            0xA1,
-            0x89,
-            0x0D,
-            0xBF,
-            0xE6,
-            0x42,
-            0x68,
-            0x41,
-            0x99,
-            0x2D,
-            0x0F,
-            0xB0,
-            0x54,
-            0xBB,
-            0x16,
-        ]
-    )
 
-    message_subytes = np.array([[Sbox[byte] for byte in row] for row in message_2d])
-    return message_subytes
+def rotWord(word):
+    # On decale le mot d'un byte vers la gauche
+    return np.roll(word, -1)
+
+
+def keyExpansion(key, Nk=4, Nr=10):
+    # on initialise la matrice W avec des 0 de taille 4x(Nk*(Nr+1)) qui est la taille de la clé étendue
+    W = np.empty((4, Nk * (Nr + 1)), dtype=np.uint8)
+    # On copie la clé dans les 4 premiers mots de la matrice W
+    # i va de 0 à Nk 
+    for i in range(Nk):
+        # On copie chaque byte de la clé dans la matrice W
+        W[:, i] = key[4 * i : 4 * (i + 1)]
+    # On applique RotWord, SubWord, et XOR avec Rcon si i est un multiple de Nk
+    for i in range(Nk, 4 * (Nr + 1)):
+        temp = W[:, i - 1].copy()
+        if i % Nk == 0:
+            temp = subWord(rotWord(temp)) ^ Rcon[i // Nk - 1]
+        # On fait un XOR entre le mot i-Nk et temp
+        W[:, i] = W[:, i - Nk] ^ temp
+    return W
+
+
+def addRoundKey(state, roundKey):
+    """Apply the AddRoundKey step to the state matrix."""
+    return state ^ roundKey

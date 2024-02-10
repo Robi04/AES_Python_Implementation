@@ -1,68 +1,82 @@
-import numpy as np
 from functions import *
 
 
+def aes_cipher(state, key):
+    # Nombre de mots de 32 bits dans la clé
+    Nk = 4 
+    # Nombre de round = 10 pour une clé de 128 bits
+    Nr = 10  
+    
+
+    expanded_key = keyExpansion(key, Nk, Nr)
+    # Rount initial (add round key)
+    state = addRoundKey(state, expanded_key[:, :4])
+    print(
+        f"INIT addRoKey : {[format(x, '02x') for x in state.transpose().flatten()]}"
+    )
+
+    # Boucle principale
+    for round in range(1, Nr):
+        state = subBytes(state)
+        print(
+            f"{round} subBytes :    {[format(x, '02x') for x in state.transpose().flatten()]}"
+        )
+        state = shiftRows(state)
+        print(
+            f"{round} shiftRows :   {[format(x, '02x') for x in state.transpose().flatten()]}"
+        )
+        state = mixColumns(state)
+        print(
+            f"{round} mixColumns :  {[format(x, '02x') for x in state.transpose().flatten()]}"
+        )
+        print(f"{round} addRoundKey : {[format(x, '02x') for x in expanded_key[:, round * 4 : (round + 1) * 4].transpose().flatten()]}")
+        state = addRoundKey(state, expanded_key[:, round * 4 : (round + 1) * 4])
+        print(
+            f"{round} addRoundKey : {[format(x, '02x') for x in state.transpose().flatten()]}"
+        )
+
+    # Dernier round
+    state = subBytes(state)
+    print(f"10 subBytes :   {[format(x, '02x') for x in state.transpose().flatten()]}")
+    state = shiftRows(state)
+    print(f"10 shiftRows :  {[format(x, '02x') for x in state.transpose().flatten()]}")
+    state = addRoundKey(state, expanded_key[:, Nr * 4 : (Nr + 1) * 4])
+    print(f"10 addRoKey : {[format(x, '02x') for x in state.transpose().flatten()]}")
+    return state
+
+
+#Fonction main pour tester le chiffrement
 if __name__ == "__main__":
     message = np.array(
-        [
-            0x00,
-            0x10,
-            0x20,
-            0x30,
-            0x40,
-            0x50,
-            0x60,
-            0x70,
-            0x80,
-            0x90,
-            0xA0,
-            0xB0,
-            0xC0,
-            0xD0,
-            0xE0,
-            0xF0,
-        ]
+    [
+        [0x00, 0x44, 0x88, 0xCC],
+        [0x11, 0x55, 0x99, 0xDD],
+        [0x22, 0x66, 0xAA, 0xEE],
+        [0x33, 0x77, 0xBB, 0xFF],
+    ],
+    dtype=np.uint8,
     )
     key = np.array(
         [
-            0xD6,
-            0xAA,
-            0x74,
-            0xFD,
-            0xD2,
-            0xAF,
-            0x72,
-            0xFA,
-            0xDA,
-            0xA6,
-            0x78,
-            0xF1,
-            0xD6,
-            0xAB,
-            0x76,
-            0xFE,
-        ]
+            0x00,
+            0x01,
+            0x02,
+            0x03,
+            0x04,
+            0x05,
+            0x06,
+            0x07,
+            0x08,
+            0x09,
+            0x0A,
+            0x0B,
+            0x0C,
+            0x0D,
+            0x0E,
+            0x0F,
+        ],
+        dtype=np.uint8,
     )
-
-    # Chiffrement en bloc
-    message_2d = chiffrementBloc(message)
-    print(f"Chiffrement en bloc : \n {message_2d}\n")
-
-    # Subytes
-    # En utilisant la matrice sbox on va remplacer chaque élément de message_2d
-    # par son équivalent dans la matrice sbox sachant que sbox est flatten
-    message_subytes = subBytes(message_2d)
-    # Afficher le résultat
-    print(f"Subytes : \n {message_subytes} \n")
-
-    # ShiftRows
-    message_shifted = shiftRows(message_subytes)
-    print(f"ShitRows : \n {message_shifted}\n")
-
-    # MixColumns
-    message_mixed = mixColumns(message_shifted)
-    print(f"MixColumns (Corrected) \n{message_mixed}\n")
-
-    # Reshape the key to match the state matrix structure
-    state_after_addroundkey = addRoundKey(message_mixed, key)
-    print(f"Add round key : \n{state_after_addroundkey}\n")
+    #Affichage du message en output
+    ciphered_message = aes_cipher(message, key)
+    print(f"Message décrypté :\n{[format(byte, '02x') for byte in ciphered_message.transpose().flatten()]}")
