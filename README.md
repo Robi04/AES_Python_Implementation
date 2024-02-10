@@ -19,7 +19,7 @@ Pour ce td nous n'allons utilisé qu'une clé de 128 bits
 $Racine du projet
 ├── constants.py     # Contient les constantes telles que les matrices rcon et sbox
 ├── functions.py     # Contient les fonctions (étapes) de notre cryptage 
-├── main.py            # Contient le code principal qui va appeler toutes les fonctions qui vont permettre le cryptage cypher en 10 round
+├── main.py            # Contient le code principal qui va appeler toutes les fonctions 
 └── README.md   # Compte rendu et explication de code 
 ```
 
@@ -29,6 +29,7 @@ $Racine du projet
 2. **ShiftRows** : Décalage des lignes de l'état.
 3. **MixColumns** : Mélange des colonnes de l'état.
 4. **AddRoundKey** : Clé de tour XOR.
+5. **Key Expansion**: Génération de clés pour chaque round
 
 # Installation
 1. Installer python -> Ajouter python au PATH (Variable d'environnement)
