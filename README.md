@@ -152,3 +152,23 @@ Pour chaque élément, on accumule les résultats des multiplications entre les 
 Le résultat de ces opérations est stocké dans message_mixed.
 
 ## **Key Expansion** :
+
+### Fonction subWord
+
+Pour chaque byte du mot, elle cherche la correspondance la matrice Sbox.
+
+### Fonction rotWord
+
+On décale notre mot d'un index sur la gauche
+Si le mot était "abcd", après l'application de rotWord, il deviendrait "bcda"
+
+### Fonction keyExpansion
+
+On prend la clé et prépare une version étendue de cette clé (10 nouvelle clés dans notre cas)
+On créer une matrice appelée W, qui sera remplie avec des versions transformées de la clé originale.
+Les premières parties de cette matrice sont directement remplies avec la clé originale.
+Ensuite, pour chaque "mot" suivant dans la matrice, va effectuer une série d'opérations (rotword, subword, et un XOR avec la matrice rcon) pour générer de nouveaux mots à partir des précédents.
+
+## **Add Round Key** :
+
+L'add round key est un étape supplémentaire ou nous allons simplement faire un XOR entre notre message de base après avoir subit quelques transformations et la clé correspondante (clé en sortie du key expansion avec l'index de notre round actuel)

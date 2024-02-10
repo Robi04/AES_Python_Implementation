@@ -65,17 +65,7 @@ def mixColumns(message_shifted):
     return message_mixed
 
 
-def addRoundKey(message_mixed, key):
-    # On convertit les matrices en uint8 pour pouvoir faire un XOR
-    message_mixed_uint8 = message_mixed.astype(np.uint8)
-    # On reshape la clé pour qu'elle ait la meme forme que le message
-    round_key_uint8 = key.reshape(4, 4).T.astype(np.uint8)
-    # On fait un XOR entre le message et la clé
-    state_after_addroundkey = np.bitwise_xor(message_mixed_uint8, round_key_uint8)
-    return state_after_addroundkey
-
 def subWord(word):
-    # On applique la Sbox a chaque byte du mot
     return np.array([Sbox[b] for b in word], dtype=np.uint8)
 
 
@@ -103,5 +93,4 @@ def keyExpansion(key, Nk=4, Nr=10):
 
 
 def addRoundKey(state, roundKey):
-    """Apply the AddRoundKey step to the state matrix."""
     return state ^ roundKey
