@@ -109,9 +109,6 @@ Pour réussir à faire en sorte que si l'index d'un des bloc est trop grand > 4 
 
 
 ## **MixColumns** : 
-
-Pour ce faire j'ai emprunté le code d'autrui car je ne savais pas l'existence du XOR
-
 ### Multiplication dans GF(2^8)
 La fonction multiply_in_gf(a, b) multiplie deux nombres a et b dans GF(2^8). La multiplication se fait bit par bit, avec une attention particulière aux débordements (quand le bit le plus significatif est 1 avant le décalage). L'opération principale est le XOR (^), qui remplace l'addition et la soustraction dans GF(2^n).
 
