@@ -24,11 +24,11 @@ $Racine du projet
 
 ## Explication de toutes les étapes du AES
 
-1. **SubBytes** : Substitution des octets de l'état par des octets de la S-Box.
-2. **ShiftRows** : Décalage des lignes de l'état.
-3. **MixColumns** : Mélange des colonnes de l'état.
-4. **Key Expansion**: Génération de clés pour chaque round
-5. **AddRoundKey** : Clé de tour XOR.
+1. **[SubBytes](#SubBytes)** : Substitution des octets de l'état par des octets de la S-Box.
+2. **[ShiftRows](#ShiftRows)** : Décalage des lignes de l'état.
+3. **[MixColumns](#MixColumns)** : Mélange des colonnes de l'état.
+4. **[KeyExpansion](#KeyExpansion)**: Génération de clés pour chaque round
+5. **[AddRoundKey](#AddRoundKey)** : Clé de tour XOR.
 
 # Installation
 
@@ -150,7 +150,7 @@ Pour chaque élément, on accumule les résultats des multiplications entre les 
 
 Le résultat de ces opérations est stocké dans message_mixed.
 
-## **Key Expansion** :
+## **KeyExpansion** :
 
 
 ### Fonction subWord
@@ -170,7 +170,7 @@ On créer une matrice appelée W, qui sera remplie avec des versions transformé
 Les premières parties de cette matrice sont directement remplies avec la clé originale.
 Ensuite, pour chaque "mot" suivant dans la matrice, va effectuer une série d'opérations (rotword, subword, et un XOR avec la matrice rcon) pour générer de nouveaux mots à partir des précédents.
 
-## **Add Round Key** :
+## **AddRoundKey** :
 ![code1](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/f92fe25f-a179-4582-b577-7b60f085b83e)
 
 L'add round key est un étape supplémentaire ou nous allons simplement faire un XOR entre notre message de base après avoir subit quelques transformations et la clé correspondante (clé en sortie du key expansion avec l'index de notre round actuel)
