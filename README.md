@@ -85,7 +85,7 @@ Permet d'appliquer une transposition à notre matrice pour l'avoir sous le même
   message_2d = np.array(list(zip(*message_2d)))
 ```
 
-## **SubBytes** : Substitution des octets de l'état par des octets de la S-Box.
+## **SubBytes** :
 
 Ici on va prendre notre message sous forme de matrice à la sortie de notre fonction chiffrement par bloc. A cette matrice on va séparer le bit de poids fort et le bit de poids et trouver l'octet correspondant en se basant sur la s-box:
 ![image](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/da2de4af-c86a-40c4-af7b-fe85451b33dd)
@@ -99,7 +99,7 @@ Pour ce faire en python avec numpy j'ai fait cette fonction avec un sbox représ
 
 Le code prend chaque byte du message original (parcourant d'abord chaque ligne avec for row in message_2d, puis chaque byte (chaque colonne de notre tableau2d) dans ces lignes avec for byte in row), et le remplace par un autre byte selon la S-box (Sbox[byte]). Cela se fait pour chaque byte du message initial.
 
-## **ShiftRows** : Décalage des lignes de l'état.
+## **ShiftRows** :
 
 Ici le but va être de décaler chaque bloc contenant un byte après notre étape de SubBytes
 ![image](https://github.com/Robi04/AES_Python_Implementation/assets/63416313/51482485-f74f-43d7-8f2c-da446a9277a0)
